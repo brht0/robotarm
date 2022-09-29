@@ -83,7 +83,7 @@ private:
 
   long lastStepMicroS = 0;
 
-  static const long minDelay = 800;
+  static const long minDelay = 600;
   static const long maxDelay = 50000;
 
 private:
@@ -125,7 +125,7 @@ void setup() {
   delay(250);
 
   // testing continuous rotation for 10 seconds
-  motors.setTarget(0, 6000*400, 10000000);
+  motors.setTarget(0, -6000*400, 2000000);
 }
 
 void loop() {
