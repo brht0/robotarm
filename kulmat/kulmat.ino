@@ -24,8 +24,9 @@ double angleToSteps(double angle, int perRevolution) {
 }
 
 
-double distance = place[0];
-double height = place[1];
+
+double distance = 20.0;
+double height = 20.0;
 
 double currentAngles = angles(height, distance);
 double angle1 = angleToSteps(currentAngles[0], 2000);
