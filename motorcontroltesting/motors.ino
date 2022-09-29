@@ -124,6 +124,7 @@ void setup() {
   Serial.begin(9600);
   delay(250);
 
+  // testing continuous rotation for 10 seconds
   motors.setTarget(0, 6000*400, 10000000);
 }
 
