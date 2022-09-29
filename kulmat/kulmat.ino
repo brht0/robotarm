@@ -4,11 +4,6 @@
 
 using namespace std;
 
-
-double place = {};
-double height = 20.0;
-double distance = 20.0;
-
 std::tuple<double, double> angles(double height, double distance) {
     double arm1 = 20.0;
     double arm2 = 15.0;
@@ -28,6 +23,10 @@ double angleToSteps(double angle, int perRevolution) {
     return steps;
 }
 
+
+double distance = place[0];
+double height = place[1];
+
 double currentAngles = angles(height, distance);
-double angle1 = currentAngles[0];
-double angle2 = currentAngles[1];
+double angle1 = angleToSteps(currentAngles[0], 2000);
+double angle2 = angleToSteps(currentAngles[1], 200);
