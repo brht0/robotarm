@@ -83,7 +83,7 @@ private:
 
   long lastStepMicroS = 0;
 
-  static const long minDelay = 600;
+  static const long minDelay = 1000;
   static const long maxDelay = 50000;
 
 private:
@@ -122,10 +122,13 @@ MotorHandler motors;
 
 void setup() {
   Serial.begin(9600);
-  delay(250);
 
-  // testing continuous rotation for 10 seconds
-  motors.setTarget(0, -6000*400, 2000000);
+  motors.setTarget(0, 0*400, 1000000);
+  motors.setTarget(1, 1*400, 1000000);
+  motors.setTarget(2, 0*400, 1000000);
+
+  // delay for 2 seconds before doing anything
+  delay(2000);
 }
 
 void loop() {
