@@ -1,19 +1,24 @@
 #define _USE_MATH_DEFINES
 #include <math.h> 
 
-void angles(double height, double distance, double* res1, double* res2) {
+void angles(double height, double distance, double depth, double* res1, double* res2, double* res3) {
     double arm1 = 20.0;
     double arm2 = 15.0;
 
-    double a1tanIn = height / distance;
-    double armH = height * height + distance * distance;
-    double a1cosIn = (arm1*arm1 - arm2 * arm2 + armH) / (2 * arm1 * sqrt(armH));
-    double angle1 = atan(a1tanIn) + acos(a1cosIn);
-    double a2cosIn = (arm1 * arm1 + arm2 * arm2 -armH) / (2 * arm1 * arm2);
-    double angle2 = acos(a2cosIn) - M_PI;
+    
+    double armH = height * height + distance * distance; // armH shorthand for h^2 + d^2
 
+    double a1tanIn = height / distance; 
+    double a1cosIn = (arm1*arm1 - arm2 * arm2 + armH) / (2 * arm1 * sqrt(armH));
+    double angle1 = atan(a1tanIn) + acos(a1cosIn); // lower arm angle
+
+    double a2cosIn = (arm1 * arm1 + arm2 * arm2 - armH) / (2 * arm1 * arm2); 
+    double angle2 = acos(a2cosIn) - M_PI; // upper arm angle
+
+    
     *res1 = angle1;
     *res2 = angle2;
+    *res3 = atan(distance / depth);
 }
 
 double toSteps(double angle, double perRevolution) {
@@ -121,16 +126,22 @@ void setup() {
 
   int x = 20;
   int y = 0;
+  int z = 1;
   
-  double res1, res2;
+  double res1, res2, res3;
   
-  angles(x, y, &res1, &res2);
+  angles(x, y, z, &res1, &res2, &res3);
 
-  res1 = M_PI * 0.4;
-  res2 = M_PI * 0.4;
+  double final1 = M_PI/2 - res1;
+  double final2 = M_PI/2 - res2;
+  double final3 = res3;
+
+  final1 = M_PI * 0.4;
+  final2 = M_PI * 0.4;
   
-  long steps1 = toSteps(res1, 510UL);
-  long steps2 = toSteps(res2, 24000UL);
+  long steps1 = toSteps(final1, 510UL); //shoulder
+  long steps2 = toSteps(final2, 24000UL); //elbow
+  long steps3 = toSteps(final3, 200UL); //rotation
   
   unsigned long timeTo = 2000000;
 
