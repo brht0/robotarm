@@ -92,30 +92,30 @@ private:
 };
 
 class MotorHandler{
-public:
-  MotorHandler(){
-    motors[0] = Motor(11, 10);
-    motors[1] = Motor(3, 2);
-    motors[2] = Motor(7, 6);
-    
-    motors[0].zero();
-    motors[1].zero();
-    motors[2].zero();
-  }
-
-  void setTarget(int index, long desiredPosition, long desiredTime){
-    motors[index].setTarget(desiredPosition, desiredTime);
-  }
-
-  void update(){
-    long t = micros();
-    for(int i=0; i<3; i++){
-      motors[i].update(t);
+  public:
+    MotorHandler(){
+      motors[0] = Motor(11, 10); // shoulder
+      motors[1] = Motor(3, 2); // rotation
+      motors[2] = Motor(7, 6); // elbow
+      
+      motors[0].zero();
+      motors[1].zero();
+      motors[2].zero();
     }
-  }
+  
+    void setTarget(int index, long desiredPosition, long desiredTime){
+      motors[index].setTarget(desiredPosition, desiredTime);
+    }
+  
+    void update(){
+      long t = micros();
+      for(int i=0; i<3; i++){
+        motors[i].update(t);
+      }
+    }
 
-private:
-  Motor motors[3];
+  private:
+    Motor motors[3];
 };
 
 MotorHandler motors;
@@ -139,19 +139,22 @@ void setup() {
   final1 = M_PI * 0.4;
   final2 = M_PI * 0.4;
   
-  long steps1 = toSteps(final1, 510UL); //shoulder
-  long steps2 = toSteps(final2, 24000UL); //elbow
-  long steps3 = toSteps(final3, 200UL); //rotation
+  long steps1 = toSteps(final1, 510UL); // shoulder
+  long steps2 = toSteps(final2, 24000UL); // elbow
+  long steps3 = toSteps(final3, 200UL); // rotation
   
   unsigned long timeTo = 2000000;
 
-  Serial.println(steps1);
-  Serial.println(steps2);
-  Serial.println(res1);
-  Serial.println(res2);
+  //prints stuff if stuff borken
+  //Serial.println(steps1);
+  //Serial.println(steps2);
+  //Serial.println(res1);
+  //Serial.println(res2);
   
-  motors.setTarget(0, steps1, timeTo);
-  motors.setTarget(1, steps2, timeTo);
+  motors.setTarget(0, steps1, timeTo); // shoulder
+  motors.setTarget(2, steps2, timeTo); // elbow
+  motors.setTarget(0, 0, timeTo); // shoulder
+  motors.setTarget(2, sccccteps2, timeTo); // elbow
 
   // delay for 0.2 seconds before doing anything
   delay(200);
@@ -166,8 +169,13 @@ void loop() {
   unsigned long goBackTime = 9000000;
   
   static bool goneBack = false;
+  
   if(!goneBack && micros() > goBackTime){
-    motors.setTarget(0, 0, timeTo);
-    motors.setTarget(1, 0, timeTo);
+    //motors.setTarget(0, 0, timeTo);
+    //motors.setTarget(1, 0, timeTo);
   }
 }
+  motors.setTarget(0, steps1, timeTo); // shoulder
+  motors.setTarget(2, steps2, timeTo); // elbow
+  motors.setTarget(0, steps1, timeTo); // shoulder
+  motors.setTarget(2, steps2, timeTo); // elbow
