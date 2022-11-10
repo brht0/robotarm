@@ -20,7 +20,7 @@ public:
 
     // set angle to which motor should move in specified global time
     // note: motors have a max velocity (see GetTimeToCompleteAngleChange)
-    void SetTarget(double angle, double time);
+    void SetTarget(double angle, double targetTime, double time);
 
     // set current angle as given parameter
     void ZeroAngle(double position = 0);
@@ -42,6 +42,9 @@ protected:
 
     double target_;
     double targetTime_;
+
+    double targetStartAngle_;
+    double targetStartTime_;
 
     // below this angle difference the driver will be satisfied
     double angleEpsilon_;

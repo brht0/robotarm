@@ -12,9 +12,18 @@ double MotorDriver::GetAngle() {
     return angle_;
 }
 
-void MotorDriver::SetTarget(double angle, double time) {
+#include "Arduino.h"
+
+void MotorDriver::SetTarget(double angle, double targetTime, double time) {
     target_ = angle;
-    targetTime_ = time;
+    targetTime_ = targetTime;
+
+    targetStartTime_ = time;
+    targetStartAngle_ = angle_;
+
+    Serial.println("Setting target");
+    Serial.println(targetTime);
+    Serial.println(time);
 }
 
 void MotorDriver::ZeroAngle(double position) {

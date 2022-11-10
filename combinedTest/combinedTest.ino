@@ -8,9 +8,9 @@ void angles(double height, double distance, double depth, double* res1, double* 
     
     double armH = height * height + distance * distance; // armH shorthand for h^2 + d^2
 
-    double a1tanIn = height / distance; 
+    // double a1tanIn = height / distance; 
     double a1cosIn = (arm1*arm1 - arm2 * arm2 + armH) / (2 * arm1 * sqrt(armH));
-    double angle1 = atan(a1tanIn) + acos(a1cosIn); // lower arm angle
+    double angle1 = atan2(height, distance) + acos(a1cosIn); // lower arm angle
 
     double a2cosIn = (arm1 * arm1 + arm2 * arm2 - armH) / (2 * arm1 * arm2); 
     double angle2 = acos(a2cosIn) - M_PI; // upper arm angle
@@ -18,7 +18,7 @@ void angles(double height, double distance, double depth, double* res1, double* 
     
     *res1 = angle1;
     *res2 = angle2;
-    *res3 = atan(distance / depth);
+    *res3 = atan2(distance, depth);
 }
 
 double toSteps(double angle, double perRevolution) {
@@ -36,7 +36,7 @@ public:
   }
   //Motor& operator=(Motor&& rhs) = default;
   
-  void zero(){ pos = 0; }
+  void zero(){ pos = desiredPos = 0; desiredTime = 1; }
   
   long getDelay(){
     long result = desiredTime / (abs(stepDistance) + 30);
@@ -83,7 +83,7 @@ private:
 
   long lastStepMicroS = 0;
 
-  static const long minDelay = 1000;
+  static const long minDelay = 1500;
   static const long maxDelay = 50000;
 
 private:
@@ -91,12 +91,12 @@ private:
   int getDirPinValue();
 };
 
-class MotorHandler{
+class MotorDriver{
   public:
-    MotorHandler(){
-      motors[0] = Motor(11, 10); // shoulder
-      motors[1] = Motor(3, 2); // rotation
-      motors[2] = Motor(7, 6); // elbow
+    MotorDriver(){
+      motors[0] = Motor(3, 2); // rotation
+      motors[1] = Motor(7, 6); // shoulder
+      motors[2] = Motor(11, 10); // elbow
       
       motors[0].zero();
       motors[1].zero();
@@ -118,31 +118,23 @@ class MotorHandler{
     Motor motors[3];
 };
 
-MotorHandler motors;
+MotorDriver motors;
 
 
 void setup() {
   Serial.begin(9600);
 
-  int x = 20;
-  int y = 0;
-  int z = 1;
-  
-  double res1, res2, res3;
-  
-  angles(x, y, z, &res1, &res2, &res3);
+  // kulmat tähän
+  double final1 = 0; //rotation
+  double final2 = M_PI/2; //shoulder
+  double final3 = 0; //elbow
 
-  double final1 = M_PI/2 - res1;
-  double final2 = M_PI/2 - res2;
-  double final3 = res3;
 
-  final1 = M_PI * 0.4;
-  final2 = M_PI * 0.4;
-  
-  long steps1 = toSteps(final1, 510UL); // shoulder
-  long steps2 = toSteps(final2, 24000UL); // elbow
-  long steps3 = toSteps(final3, 200UL); // rotation
-  
+  // älä koske
+  long steps1 = toSteps(final1, 400UL);
+  long steps2 = toSteps(final2, 24000UL);
+  long steps3 = toSteps(final3, 4.4*400UL);
+
   unsigned long timeTo = 2000000;
 
   //prints stuff if stuff borken
@@ -151,19 +143,21 @@ void setup() {
   //Serial.println(res1);
   //Serial.println(res2);
   
-  motors.setTarget(0, steps1, timeTo); // shoulder
-  motors.setTarget(2, steps2, timeTo); // elbow
-  motors.setTarget(0, 0, timeTo); // shoulder
-  motors.setTarget(2, sccccteps2, timeTo); // elbow
+  // motors.setTarget(0, 0, 1000000); // base
+  // motors.setTarget(1, 0, 1000000); // shoulder
+  // motors.setTarget(2, 400*5, 1000000); // elbow
+  motors.setTarget(0, steps1, 1000000); // rotation
+  motors.setTarget(1, steps2, 1000000); // shoulder
+  motors.setTarget(2, steps3, 1000000); // elbow
 
   // delay for 0.2 seconds before doing anything
-  delay(200);
+  delay(2000);
 }
 
 
 void loop() {
   motors.update();
-  delayMicroseconds(10);
+  delayMicrosecondmvs(10);
 
   unsigned long timeTo = 2000000;
   unsigned long goBackTime = 9000000;
@@ -171,11 +165,8 @@ void loop() {
   static bool goneBack = false;
   
   if(!goneBack && micros() > goBackTime){
-    //motors.setTarget(0, 0, timeTo);
-    //motors.setTarget(1, 0, timeTo);
+    motors.setTarget(0, 0, timeTo);
+    motors.setTarget(1, 0, timeTo);
+    motors.setTarget(2, 0, timeTo);
   }
 }
-  motors.setTarget(0, steps1, timeTo); // shoulder
-  motors.setTarget(2, steps2, timeTo); // elbow
-  motors.setTarget(0, steps1, timeTo); // shoulder
-  motors.setTarget(2, steps2, timeTo); // elbow

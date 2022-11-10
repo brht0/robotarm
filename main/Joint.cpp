@@ -20,8 +20,8 @@ double Joint::GetAngle() const{
     return driver_->GetAngle();
 }
 
-void Joint::SetTarget(double angle, double time){
-    driver_->SetTarget(angle, time);
+void Joint::SetTarget(double angle, double targetTime, double time){
+    driver_->SetTarget(angle, targetTime, time);
 }
 
 void Joint::SetAngle(double angle){

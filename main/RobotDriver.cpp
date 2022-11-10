@@ -7,8 +7,8 @@ RobotDriver::~RobotDriver() {
 }
 
 void RobotDriver::Update(double time) {
-    for(auto& joint : joints_){
-        joint.Update(time);
+    for(int i=0; i<joints_.size(); i++){
+        joints_[i].Update(time);
     }
 }
 
@@ -18,24 +18,24 @@ double RobotDriver::GetAngle(int index) {
     return joints_[index].GetAngle();
 }
 
-std::vector<double> RobotDriver::GetAngles() {
-    std::vector<double> result(joints_.size());
+Vector<double> RobotDriver::GetAngles() {
+    Vector<double> result;
     for(int i=0; i<joints_.size(); i++){
-        result[i] = joints_[i].GetAngle();
+        result.push_back(joints_[i].GetAngle());
     }
     return result;
 }
 
-std::vector<double> RobotDriver::GetPositions() {
+Vector<double> RobotDriver::GetPositions() {
 
     // no function for position... :(
     // joint class?
 
 }
 
-void RobotDriver::MoveAngles(std::vector<double> dangles, double time) {
+void RobotDriver::MoveAngles(Vector<double> dangles, double targetTime, double time) {
     for(int i=0; i<joints_.size(); i++){
-        joints_[i].SetTarget(dangles[i], time);
+        joints_[i].SetTarget(dangles[i], targetTime, time);
     }
 }
 
@@ -59,10 +59,14 @@ void RobotDriver::MoveZ(double dz) {
     
 }
 
-void RobotDriver::SetAnglesTo(std::vector<double> angles) {
+void RobotDriver::SetAnglesTo(Vector<double> angles) {
     
 }
 
 void RobotDriver::SetPositionTo(double x, double y, double z) {
     
+}
+
+void RobotDriver::AddJoint(Joint joint) {
+    joints_.push_back(joint);
 }

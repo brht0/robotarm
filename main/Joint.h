@@ -9,7 +9,7 @@ Joint has a single motor connected to it and a specified length,
 therefore I decided to do it this way since it's the way it is.
 */
 
-#include <vector>
+#include "Vector.h"
 
 class Joint{
 public:
@@ -20,9 +20,9 @@ public:
 
     double GetLength() const;
     double GetAngle() const;
-    std::vector<double> GetPositionChange() const;
+    Vector<double> GetPositionChange() const;
 
-    void SetTarget(double angle, double time);
+    void SetTarget(double angle, double targetTime, double time);
     void SetAngle(double angle);
 
 private:

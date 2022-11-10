@@ -3,7 +3,7 @@
 
 #include "Joint.h"
 // works in arduino?
-#include <vector>
+#include "Vector.h"
 
 /*
 RobotDriver is a high level class handling the entire motion of
@@ -19,17 +19,19 @@ public:
     RobotDriver();
     ~RobotDriver();
 
+    void AddJoint(Joint joint);
+
     // returns current position of tool end
-    std::initializer_list<double> GetPosition();
+    Vector<double> GetPosition();
 
     void Update(double time);
 
     double GetAngle(int index);
-    std::vector<double> GetAngles();
-    std::vector<double> GetPositions();
+    Vector<double> GetAngles();
+    Vector<double> GetPositions();
 
     // moves single motor with specified index to angle
-    void MoveAngles(std::vector<double> dangles, double time);
+    void MoveAngles(Vector<double> dangles, double targetTime, double time);
 
     // moves single motor with specified index to angle
     void MoveAngle(int index, double dangle);
@@ -45,11 +47,11 @@ public:
     void MoveZ(double dz);
 
     // move in global space
-    void SetAnglesTo(std::vector<double> angles);
+    void SetAnglesTo(Vector<double> angles);
     void SetPositionTo(double x, double y, double z);
 
 private:
-    std::vector<Joint> joints_;
+    Vector<Joint> joints_;
 
     // angle logic here i think?
     // Jacobian Matrix to generalize ?
