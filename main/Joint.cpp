@@ -1,5 +1,10 @@
 #include "Joint.h"
 
+
+Joint::Joint(){
+    
+}
+
 Joint::Joint(double length, MotorDriver* driver):
     length_(length), driver_(driver)
 {

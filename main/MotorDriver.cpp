@@ -38,3 +38,7 @@ void MotorDriver::GetTimeToCompleteAngleChange(double da) {
 void MotorDriver::Update(double time) {
     
 }
+
+bool MotorDriver::MotorDriver::MotorDriver::IsDone() const {
+    return true;    
+}

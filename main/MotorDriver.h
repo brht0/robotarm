@@ -16,6 +16,8 @@ public:
     MotorDriver(double maxSpeed, double angleEpsilon);
     virtual ~MotorDriver();
 
+    virtual bool IsDone() const;
+
     double GetAngle();
 
     // set angle to which motor should move in specified global time

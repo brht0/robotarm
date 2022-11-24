@@ -6,8 +6,8 @@
 template<typename T>
 class Vector{
 public:
-    Vector();
-    ~Vector();
+    Vector(){}
+    ~Vector(){}
 
     int size(){
       return used_index;

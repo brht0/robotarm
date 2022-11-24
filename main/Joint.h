@@ -13,6 +13,7 @@ therefore I decided to do it this way since it's the way it is.
 
 class Joint{
 public:
+    Joint();
     Joint(double length, MotorDriver* driver);
     ~Joint();
 
