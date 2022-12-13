@@ -1,20 +1,19 @@
 #include "ServoDriver.h"
 #include "StepperDriver.h"
 #include "IO.hpp"
-
-#include <stdlib.h>
-
-double ConvertToDouble(char* message){
-  return atof(message);
-}
-double ConvertToDouble(String message){
-  return atof(message.c_str());
-}
+#include "Utils.hpp"
 
 ServoDriver servo1(9);
-StepperDriver stepper1(11, 10, 550); // kyynerpää
-StepperDriver stepper2(6, 7, 7200); // olkapää
-StepperDriver stepper3(2, 3, 130); // alusta
+StepperDriver stepper1(11, 10, 550);  // elbow
+StepperDriver stepper2(6, 7, 7200);   // shoulder
+StepperDriver stepper3(2, 3, 130);    // base
+
+double lastJoystickX = 0.0;
+double lastJoystickY = 0.0;
+double lastJoystickR = 0.0;
+
+Timer timer;
+Timer updateTimer;
 
 void InitMotors(){
   servo1.init();
@@ -23,40 +22,11 @@ void InitMotors(){
   stepper3.init();
 }
 
-bool IsValidCommand(String command){
-  if(command.length() < 3)
-    return false;
-
-  if(command[0] == 'B'){
-    if(command.length() != 3)
-      return false;
-    return true;
-  }
-  else if(command[0] == 'X' || command[0] == 'Y' || command[0] == 'R'){
-    if(command.length() < 3)
-      return false;
-
-    return true;
-  }
-
-  return false;
-}
-
-
-CppInterface io;
-Timer timer;
-Timer updateTimer;
-
-String lastJoystickX = "0";
-String lastJoystickY = "0";
-String lastJoystickR = "0";
-
 void ApplyCommand(String command){
   if(command.length() >= 3){
     //Serial.println(command);
 
     if(command[0] == 'B'){
-      // lastJoystick1 = command[2];
       if(command[2] == '0'){
         stepper1.SetTarget(stepper1.GetAngle() - 5, timer.GetTimeSeconds() + 0.1, timer.GetTimeSeconds());
       }
@@ -71,13 +41,13 @@ void ApplyCommand(String command){
       }
     }
     else if(command[0] == 'X'){
-      lastJoystickX = command.substring(2);
+      lastJoystickX = ConvertToDouble(command.substring(2));
     }
     else if(command[0] == 'Y'){
-      lastJoystickY = command.substring(2);
+      lastJoystickY = ConvertToDouble(command.substring(2));
     }
     else if(command[0] == 'R'){
-      lastJoystickR = command.substring(2);
+      lastJoystickR = ConvertToDouble(command.substring(2));
     }
   }
 
@@ -106,7 +76,7 @@ void UpdateMotorTargets(){
 }
 
 void setup(){
-  io.SetupSerial();
+  cppInterface.SetupSerial();
   InitMotors();
   timer.Reset();
   updateTimer.Reset();
@@ -115,7 +85,7 @@ void setup(){
 
 void loop(){
   timer.Update();
-  auto command = io.ReadCommand();
+  auto command = cppInterface.ReadCommand();
   if(command.length()){
     ApplyCommand(command);
   }
@@ -130,6 +100,4 @@ void loop(){
   stepper1.Update(timer.GetTimeSeconds());
   stepper2.Update(timer.GetTimeSeconds());
   stepper3.Update(timer.GetTimeSeconds());
-
-  //delay(10);
 }

@@ -1,17 +1,13 @@
 #include "StepperDriver.h"
-
 #include "Arduino.h"
 
-StepperDriver::StepperDriver(int stepPin, int dirPin, int stepsPerRevolution) :
-    MotorDriver(90.f, 3.f), stepPin_(stepPin), dirPin_(dirPin), stepsPerRevolution_(stepsPerRevolution)
+StepperDriver::StepperDriver(const Timer& timer, int stepPin, int dirPin, int stepsPerRevolution) :
+    MotorDriver(timer), stepPin_(stepPin), dirPin_(dirPin), stepsPerRevolution_(stepsPerRevolution),
+    stepDelayMs_(0), lastStepTime_(0), stepValue_(0), dirValue_(0)
 {
 }
 
 StepperDriver::~StepperDriver() {
-}
-
-bool StepperDriver::IsDone() const{
-    return abs(angle_ - AngleInSteps(target_)) <= 0.03;
 }
 
 void StepperDriver::init() {

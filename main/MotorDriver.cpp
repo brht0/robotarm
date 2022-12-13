@@ -1,8 +1,8 @@
 #include "MotorDriver.h"
 #include "Arduino.h"
 
-MotorDriver::MotorDriver(double maxSpeed, double angleEpsilon):
-    maxSpeed_(maxSpeed), angleEpsilon_(angleEpsilon)
+MotorDriver::MotorDriver(const Timer& timer):
+	angle_(0.0), angleVelocity_(0.0), timer_(timer)
 {
 }
 
@@ -10,34 +10,20 @@ MotorDriver::~MotorDriver() {
 }
 
 double MotorDriver::GetAngle() {
-    return angle_;
+	return angle_;
 }
 
-void MotorDriver::SetTarget(double angle, double targetTime, double time) {
-    target_ = angle;
-    targetTime_ = targetTime;
-
-    targetStartTime_ = time;
-    targetStartAngle_ = angle_;
-
-    // Serial.println("Setting target");
-    // Serial.println(targetTime);
-    // Serial.println(time);
+void MotorDriver::SetVelocity(double angleVelocity){
+	angleVelocity_ = angleVelocity;
 }
 
 void MotorDriver::ZeroAngle(double position) {
-    angle_ = position;
-    target_ = position;
+	angle_ = position;
 }
 
-void MotorDriver::GetTimeToCompleteAngleChange(double da) {
-    
-}
-
-void MotorDriver::Update(double time) {
-    
+void MotorDriver::Update() {
 }
 
 bool MotorDriver::IsDone() const {
-    return true;    
+	return true;
 }
