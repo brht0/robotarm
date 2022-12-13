@@ -9,7 +9,6 @@
 // StepperDriver stepper3(2, 3, 130);
 
 // int eventIndex = 0;
-// Vector<Event> events;
 
 // void setup(){
 //     Serial.begin(9600);
@@ -138,32 +137,29 @@
 // }
 
 #include "Timer.hpp"
+#include "Vector.h"
 
+Vector<int> vec;
 Timer timer;
+double cumulator = 0;
+int counter = 0;
 
 void setup(){
   Serial.begin(9600);
-  Serial.println(sizeof(int));
-  Serial.println(sizeof(unsigned int));
-  Serial.println(sizeof(unsigned long));
-  Serial.println(sizeof(unsigned long long));
-  Serial.println(sizeof(double));
-  Serial.println(sizeof(long double));
 
   timer.Reset();
 }
 
-double cumulator = 0;
-
 void loop(){
   cumulator += timer.GetDeltaTimeSeconds();
 
-  Serial.println(cumulator);
-
-  if(cumulator > 1.0){
-    Serial.println("Over a second...");
+  if(cumulator > 2.0){
+    Serial.println("Pushing to vector: " + String(vec.size()));
+    vec.push_back(counter ++);
+    for(auto& i : vec){
+      Serial.println(i);
+    }
     cumulator -= 1.0;
   }
-
   timer.Update();
 }
