@@ -15,36 +15,56 @@ public:
     Serial.setTimeout(0);
   }
 
-  //String ReadCommand(){
   String ReadCommand(){
     bool done = false;
-    //String currentToken = "";
-    String resultString = "";
     
     while(Serial.available() > 0 && !done){
       char byte = Serial.read();
-
-      resultString += byte;
   
-      if(0)switch(byte){
-        case '\n':
-          //done = true;
-          //result.push_back(currentToken);
-          break;
-        case ' ':
-          //result.push_back(currentToken);
-          //currentToken = "";
-          break;
-        default:
-          //currentToken += byte;
-          break;
+      if(byte == '\n'){
+        done = true;
+      }
+      else{
+        commandSoFar += byte;
       }
     }
 
-    return resultString;
+    if(done){
+      // auto result = SplitToWords(commandSoFar);
+      // Serial.println(commandSoFar);
+      // Serial.println("Result: " + String(result.size()));
+      auto result = commandSoFar;
+      commandSoFar = "";
+      return result;
+    }
+    else{
+      // return Vector<String>();
+      return "";
+    }
   }
 
 private:
+  String commandSoFar = "";
+
+  Vector<String> SplitToWords(const String& text){
+    Vector<String> result;
+    String word = String();
+
+    for(char c : text){
+      if(c == ' '){
+        result.push_back(word);
+        // Serial.println(word);
+        word = String();
+      }
+      else{
+        word += c;
+      }
+    }
+
+    result.push_back(word);
+    return result;
+  }
+
 };
 
 #endif // __IO_H__
