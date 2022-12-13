@@ -6,8 +6,23 @@
 template<typename T>
 class Vector{
 public:
-    Vector(): data_(nullptr) { Allocate(2); }
-    ~Vector(){ if(data_) delete data_; data_ = nullptr;}
+    Vector(): data_(nullptr), length_(0), allocatedLength_(0) { Allocate(2); }
+    Vector(Vector&& rhs): data_(rhs.data_), length_(rhs.length_), allocatedLength_(rhs.allocatedLength_) {
+        rhs.data_ = nullptr;
+    }
+    Vector(Vector& rhs): data_(nullptr), length_(0), allocatedLength_(0) {
+      Allocate(rhs.allocatedLength_);
+      length_ = rhs.length_;
+      for(unsigned i=0; i<length_; i++){
+        data_[i] = rhs.data_[i];
+      }
+      rhs.data_ = nullptr;
+    }
+    ~Vector(){
+        if(data_)
+            delete[] data_;
+        data_ = nullptr;
+    }
 
     unsigned size(){
       return length_;
@@ -44,17 +59,17 @@ public:
 private:
     void Allocate(unsigned newLength){
         T* newData = new T[newLength];
-        for(int i=0; i<length_; i++){
+        for(unsigned i=0; i<length_; i++){
             newData[i] = data_[i];
         }
         allocatedLength_ = newLength;
         if(data_){
-            delete data_;
+            delete[] data_;
         }
         data_ = newData;
     }
 
-    unsigned length_ = 0;
+    unsigned length_;
     unsigned allocatedLength_;
     T* data_ = nullptr;
 };
