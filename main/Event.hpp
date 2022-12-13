@@ -12,9 +12,7 @@ struct Event{
     ~Event();
 
     bool IsDone() const;
-
     void AddEvent(MotorDriver* driver, double target);
-
     void SetEvents(double time, double targetTime);
 };
 
