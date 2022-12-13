@@ -24,7 +24,6 @@ void ServoDriver::Update(double time){
   }
 
   int pos = targetStartAngle_ + scalar * (target_ - targetStartAngle_);
-  Serial.println(pos);
   servo_.write(pos);
 }
 

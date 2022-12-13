@@ -39,6 +39,6 @@ void MotorDriver::Update(double time) {
     
 }
 
-bool MotorDriver::MotorDriver::MotorDriver::IsDone() const {
+bool MotorDriver::IsDone() const {
     return true;    
 }

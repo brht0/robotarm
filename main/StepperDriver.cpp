@@ -11,7 +11,7 @@ StepperDriver::~StepperDriver() {
 }
 
 bool StepperDriver::IsDone() const{
-    return abs(angle_ - AngleInSteps(target_)) <= 0.03; 
+    return abs(angle_ - AngleInSteps(target_)) <= 0.03;
 }
 
 void StepperDriver::init() {
@@ -69,8 +69,8 @@ int StepperDriver::AngleInSteps(double angle) const {
 }
 
 double StepperDriver::GetDelay() const {
-    return 0.0001;
-    //return (targetTime_ - targetStartTime_) / (double)stepsPerRevolution_;
+    //return 0.0001;
+    return (targetTime_ - targetStartTime_) / (double)stepsPerRevolution_;
 
     //long result = max(targetTime_ - targetStartTime_, 0) / (abs(stepDistance) + 30);
 
