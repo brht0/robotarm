@@ -40,6 +40,15 @@ public:
         data_[length_] = newData;
         length_ ++;
     }
+
+    void push_back(T&& newData){
+        if(length_ >= allocatedLength_){
+            Allocate(length_ + length_ / 2);
+        }
+
+        data_[length_] = newData;
+        length_ ++;
+    }
     
     T& operator[](int index){
         if(index < 0 || index > length_ - 1){

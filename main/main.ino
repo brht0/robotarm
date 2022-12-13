@@ -1,54 +1,28 @@
-// #include "RobotDriver.h"
-// #include "Event.hpp"
+#include "ServoDriver.h"
+#include "StepperDriver.h"
+#include "IO.hpp"
 
-// ServoDriver servo1(9);
-// // ServoDriver servo2(5);
+#include <stdlib.h>
 
-// StepperDriver stepper1(11, 10, 550);
-// StepperDriver stepper2(6, 7, 7200);
-// StepperDriver stepper3(2, 3, 130);
+double ConvertToDouble(char* message){
+  return atof(message);
+}
 
-// int eventIndex = 0;
+ServoDriver servo1(9);
+StepperDriver stepper1(11, 10, 550);
+StepperDriver stepper2(6, 7, 7200);
+StepperDriver stepper3(2, 3, 130);
 
-// void setup(){
-//     Serial.begin(9600);
-
-//     servo1.init();
-//     // servo2.init();
-//     stepper1.init();
-//     stepper2.init();
-//     stepper3.init();
-
-//     double dir = 1.f;
-
-//     Event e0;
-//     e0.AddEvent(&servo1, 180.0);
-//     e0.AddEvent(&stepper1, dir * -0.0 * 3.14159);
-//     e0.AddEvent(&stepper2, dir * 0.0 * 3.14159);
-//     e0.AddEvent(&stepper3, dir * 0.0 * 3.14159);
-
-//     events.push_back(e0);
-
-//     delay(500);
-//     auto t = GetTimeSeconds();
-//     events[0].SetEvents(t, t+3.0);
-    
-//     //servo1.SetTarget(180, GetTimeSeconds() + 0.1, GetTimeSeconds());
-// }
-
-// bool flag1 = true;
-// bool flag2 = true;
-// bool flag3 = true;
-
-// const unsigned int MAX_MESSAGE_LENGTH = 12;
-// #include <stdlib.h>
-// double ConvertToDouble(char* message){
-//   return atof(message);
-// }
+void InitMotors(){
+  servo1.init();
+  stepper1.init();
+  stepper2.init();
+  stepper3.init();
+}
 
 // void applyCommand(char* message){
 //   double result = ConvertToDouble(message+2);
-//   Serial.print("THIs: ");
+//   Serial.print("This: ");
 //   Serial.print(result);
 //   Serial.print("\n");
 
@@ -80,7 +54,6 @@
 // }
 
 // void loop(){
-
 //     //Check to see if anything is available in the serial receive buffer
 //     while (Serial.available() > 0)
 //     {
@@ -112,7 +85,6 @@
 //       }
 //     }
 
-//     //servo1.Update(GetTimeSeconds());
 //     auto t = GetTimeSeconds();
 
 //     stepper1.Update(t);
@@ -120,46 +92,34 @@
 //     stepper3.Update(t);
 //     servo1.Update(t);
 
-//     if(0){
-//     if(events[eventIndex].IsDone()){
-//       Serial.println("Event done");
-//       eventIndex ++;
-//       events[eventIndex].SetEvents(t, t + 10.0);
-//     }
-//     else{
-//       if(eventIndex >= events.size()){
-//         //Serial.println("Event done");
-//       }
-//     }
-//     }
 
 //     //delay(10);
 // }
 
-#include "Timer.hpp"
-#include "Vector.h"
-
-Vector<int> vec;
-Timer timer;
-double cumulator = 0;
-int counter = 0;
+CppInterface io;
 
 void setup(){
-  Serial.begin(9600);
-
-  timer.Reset();
+  io.SetupSerial();
+  //InitMotors();
 }
 
 void loop(){
-  cumulator += timer.GetDeltaTimeSeconds();
-
-  if(cumulator > 2.0){
-    Serial.println("Pushing to vector: " + String(vec.size()));
-    vec.push_back(counter ++);
-    for(auto& i : vec){
-      Serial.println(i);
-    }
-    cumulator -= 1.0;
+  //Serial.println("Checking for commands: ");
+  auto vec = io.ReadCommand();
+  for(auto x : vec){
+    Serial.println(x);
   }
-  timer.Update();
+  delay(10);
+
+  // cumulator += timer.GetDeltaTimeSeconds();
+
+  // if(cumulator > 2.0){
+  //   Serial.println("Pushing to vector: " + String(vec.size()));
+  //   vec.push_back(counter ++);
+  //   for(auto& i : vec){
+  //     Serial.println(i);
+  //   }
+  //   cumulator -= 1.0;
+  // }
+  // timer.Update();
 }
