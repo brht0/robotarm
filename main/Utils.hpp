@@ -2,6 +2,7 @@
 #define __UTILS_H__
 
 #include <stdlib.h>
+#include "Arduino.h"
 
 double ConvertToDouble(char* message){
   return atof(message);

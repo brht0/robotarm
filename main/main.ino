@@ -45,6 +45,8 @@ CommandType GetCommandType(const String& command){
   if(command[0] == 'X' || command[0] == 'Y' || command[0] == 'R'){
     return CommandType::Joystick;
   }
+
+  return CommandType::None;
 }
 
 Joystick GetJoystickType(const String& command){
@@ -52,6 +54,7 @@ Joystick GetJoystickType(const String& command){
   if(first == 'X') return Joystick::X;
   if(first == 'Y') return Joystick::Y;
   if(first == 'R') return Joystick::R;
+  return Joystick::None;
 }
 
 Timer timer;
@@ -83,9 +86,9 @@ void UpdateMotorTargets(){
   double y = joystickValues[(int)Joystick::Y];
   double r = joystickValues[(int)Joystick::R];
 
-  double k_x = 1.0;
-  double k_y = 1.0;
-  double k_r = 1.0;
+  double k_x = 50.0;
+  double k_y = 2000.0;
+  double k_r = -500.0;
 
   if(0){
   Serial.print(x);
@@ -116,10 +119,10 @@ void loop(){
     ApplyCommand(command);
   }
 
-  if(updateTimer.GetTimeSeconds() > 0.5){
+  if(updateTimer.GetTimeSeconds() > 0.05){
     UpdateMotorTargets();
     updateTimer.Reset();
-    Serial.println(String((long)stepper1.GetPosition()));
+    // Serial.println(String((long)stepper1.GetPosition()));
   }
 
   servo1.Update();

@@ -19,7 +19,10 @@ private:
     ull stepsPerRevolution_;
     long long position_;
 
+    bool stationary_;
     ull stepDelayMs_;
+    const ull minStepDelayMS_ = 560;
+
     ull lastStepTime_;
 
     int stepPin_, dirPin_;

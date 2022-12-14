@@ -3,7 +3,7 @@
 
 StepperDriver::StepperDriver(const Timer& timer, int stepPin, int dirPin, ull stepsPerRevolution) :
 	MotorDriver(timer), stepPin_(stepPin), dirPin_(dirPin), stepsPerRevolution_(stepsPerRevolution),
-	stepDelayMs_(0), lastStepTime_(0), stepValue_(0), dirValue_(0), position_(0)
+	stepDelayMs_(0), lastStepTime_(0), stepValue_(0), dirValue_(0), position_(0), stationary_(true)
 {
 }
 
@@ -11,7 +11,7 @@ StepperDriver::~StepperDriver() {
 }
 
 void StepperDriver::Update() {
-	bool shouldStep = timer_.GetTimeMS() - lastStepTime_ >= GetDelayMS();
+	bool shouldStep = !stationary_ && timer_.GetTimeMS() - lastStepTime_ >= GetDelayMS();
 
 	if(shouldStep){
 		// whether motor should change step pin
@@ -30,29 +30,20 @@ void StepperDriver::Update() {
 	}
 }
 
-// #include "Arduino.h"
-
 void StepperDriver::SetVelocity(long double angleVelocity){
 	MotorDriver::SetVelocity(angleVelocity);
 	
-	// if(abs(angleVelocity_) < 0.1){
-	// 	stepDelayMs_ = 10e14;
-	// 	return;
-	// }
+  long double revolutionsPerSecond = ((long double)angleVelocity_ / (long double)(2.0*3.14159));
+	long double stepsPerSecond = (long double)abs(revolutionsPerSecond) * (long double)stepsPerRevolution_;
+	stepDelayMs_ = (long double)(10e7) / stepsPerSecond;
 
-	// 200 steps per rev
-	// 2pi velocity
-	// -> 200 per second
-	// pi velocity
-	// -> 100 per second
-	long long stepsPerSecond = (long double)stepsPerRevolution_ * (long double)angleVelocity_ / (long double)(2.0*3.14159);
-	stepDelayMs_ = (unsigned long)stepsPerSecond * 10e9;
+	stationary_ = (abs(revolutionsPerSecond) < 0.1);
+	if(stepDelayMs_ < minStepDelayMS_) stepDelayMs_ = minStepDelayMS_; 
 
-	Serial.print((unsigned long)stepsPerSecond);
-	Serial.print(" ");
-	Serial.print((unsigned long)stepDelayMs_);
-	Serial.print("\n");
-
+	// Serial.print((unsigned long)stepsPerSecond);
+	// Serial.print(" ");
+	// Serial.print((unsigned long)stepDelayMs_);
+	// Serial.print("\n");
 }
 
 ull StepperDriver::GetDelayMS() const {

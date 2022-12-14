@@ -20,8 +20,8 @@ private:
     Servo servo_;
     long double position_;
     
-    const long double maxPosition_ = 0.0;
-    const long double minPosition_ = 180.0;
+    const long double maxPosition_ = 180.0;
+    const long double minPosition_ = 0.0;
 };
 
 #endif // __SERVODRIVER_H__
