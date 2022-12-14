@@ -1,77 +1,64 @@
 #include "StepperDriver.h"
 #include "Arduino.h"
 
-StepperDriver::StepperDriver(const Timer& timer, int stepPin, int dirPin, int stepsPerRevolution) :
-    MotorDriver(timer), stepPin_(stepPin), dirPin_(dirPin), stepsPerRevolution_(stepsPerRevolution),
-    stepDelayMs_(0), lastStepTime_(0), stepValue_(0), dirValue_(0)
+StepperDriver::StepperDriver(const Timer& timer, int stepPin, int dirPin, ull stepsPerRevolution) :
+	MotorDriver(timer), stepPin_(stepPin), dirPin_(dirPin), stepsPerRevolution_(stepsPerRevolution),
+	stepDelayMs_(0), lastStepTime_(0), stepValue_(0), dirValue_(0), position_(0)
 {
 }
 
 StepperDriver::~StepperDriver() {
 }
 
-void StepperDriver::init() {
-    ZeroAngle();
+void StepperDriver::Update() {
+	bool shouldStep = timer_.GetTimeMS() - lastStepTime_ >= GetDelayMS();
+
+	if(shouldStep){
+		// whether motor should change step pin
+		stepValue_ = stepValue_ == 0 ? 1 : 0;
+
+		// change dir pin value
+		dirValue_ = angleVelocity_ > 0.0 ? 1 : 0;
+
+		// update pin values
+		digitalWrite(dirPin_, dirValue_);
+		digitalWrite(stepPin_, stepValue_);
+
+		position_ += (dirValue_ == 1 ? 1 : -1) * stepValue_; 
+
+		lastStepTime_ = timer_.GetTimeMS();
+	}
 }
 
-void StepperDriver::Update(double time) {
-    long dpos = AngleInSteps(target_) - pos;
-    long dir = (dpos > 0 ? 1 : (dpos == 0 ? 0 : -1));
+// #include "Arduino.h"
 
-    bool doStep = dpos != 0 && (time > lastStepTime + GetDelay());
+void StepperDriver::SetVelocity(long double angleVelocity){
+	MotorDriver::SetVelocity(angleVelocity);
+	
+	// if(abs(angleVelocity_) < 0.1){
+	// 	stepDelayMs_ = 10e14;
+	// 	return;
+	// }
 
-    //Serial.print("Before step...");
-    //Serial.print(target_);
-    //Serial.print("\n");
+	// 200 steps per rev
+	// 2pi velocity
+	// -> 200 per second
+	// pi velocity
+	// -> 100 per second
+	long long stepsPerSecond = (long double)stepsPerRevolution_ * (long double)angleVelocity_ / (long double)(2.0*3.14159);
+	stepDelayMs_ = (unsigned long)stepsPerSecond * 10e9;
 
-    if(doStep){
-        if(0){
-            Serial.print("Stepping...");
-            Serial.print(pos);
-            Serial.print(" ");
-            Serial.print(angle_);
-            Serial.print(" ");
-            Serial.print(dirValue);
-            Serial.print("\n");
-        } 
-        stepValue = stepValue == 0 ? 1 : 0;
-        dirValue = dir > 0 ? 1 : 0;
-
-        // set pin values
-        digitalWrite(dirPin_, dirValue);
-        digitalWrite(stepPin_, stepValue);
-
-        // update stuff
-        pos += dir;
-
-        lastStepTime = time;
-        angle_ = pos / (double)stepsPerRevolution_;
-    }
+	Serial.print((unsigned long)stepsPerSecond);
+	Serial.print(" ");
+	Serial.print((unsigned long)stepDelayMs_);
+	Serial.print("\n");
 
 }
 
-void StepperDriver::ZeroAngle(double position) {
-    pos = 0;
-    angle_ = 0;
+ull StepperDriver::GetDelayMS() const {
+	return stepDelayMs_;
 }
 
-void StepperDriver::SetAngle(double angle) {
-    angle_ = angle;
-    //setTargetOld(angle * stepsPerRevolution, 1.0 * 10e6);
-}
-
-int StepperDriver::AngleInSteps(double angle) const {
-    return angle * stepsPerRevolution_;    
-}
-
-double StepperDriver::GetDelay() const {
-    //return 0.0001;
-    return (targetTime_ - targetStartTime_) / (double)stepsPerRevolution_;
-
-    //long result = max(targetTime_ - targetStartTime_, 0) / (abs(stepDistance) + 30);
-
-    // clamp to range
-    //result = constrain(result, minDelay, maxDelay);
-
-    //return result;
+ull StepperDriver::GetPosition() const {
+	return position_;    
 }

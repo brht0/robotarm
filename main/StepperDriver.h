@@ -5,16 +5,19 @@
 
 class StepperDriver : public MotorDriver{
 public:
-    StepperDriver(const Timer& timer, int stepPin, int dirPin, int stepsPerRevolution);
+    StepperDriver(const Timer& timer, int stepPin, int dirPin, ull stepsPerRevolution);
     ~StepperDriver();
 
-    virtual void SetVelocity(double angleVelocity) override;
+    ull GetPosition() const;
+
+    virtual void SetVelocity(long double angleVelocity) override;
     virtual void Update() override;
 
 private:
-    double GetDelay() const;
+    ull GetDelayMS() const;
 
-    int stepsPerRevolution_;
+    ull stepsPerRevolution_;
+    long long position_;
 
     ull stepDelayMs_;
     ull lastStepTime_;

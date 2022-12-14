@@ -8,20 +8,20 @@ public:
     MotorDriver(const Timer& timer);
     virtual ~MotorDriver();
 
-    double GetAngle();
-    virtual void SetVelocity(double angleVelocity);
-    void ZeroAngle(double position = 0);
+    long double GetAngle();
+    virtual void SetVelocity(long double angleVelocity);
+    void ZeroAngle(long double position = 0);
 
     virtual void Update();
 
 protected:
     const Timer& timer_;
 
-    double angle_;
-    double angleVelocity_;
+    long double angle_;
+    long double angleVelocity_;
 
     // below this angle difference the driver will be satisfied
-    double angleEpsilon_;
+    long double angleEpsilon_;
 };
 
 #endif // __MOTORDRIVER_H__

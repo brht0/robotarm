@@ -1,9 +1,8 @@
 #include "CppInterface.hpp"
 
 #include "Arduino.h"
-#include "Vector.h"
 
-CppInterface(){}
+CppInterface::CppInterface(){}
 
 void CppInterface::SetupSerial(){
     Serial.begin(9600);
@@ -26,24 +25,5 @@ String CppInterface::ReadCommand(){
         }
     }
 
-    return result;
-}
-
-Vector<String> CppInterface::SplitToWords(const String& text){
-    Vector<String> result;
-    String word = String();
-
-    for(char c : text){
-        if(c == ' '){
-        result.push_back(word);
-        // Serial.println(word);
-        word = String();
-        }
-        else{
-        word += c;
-        }
-    }
-
-    result.push_back(word);
     return result;
 }

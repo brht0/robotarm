@@ -9,21 +9,17 @@ MotorDriver::MotorDriver(const Timer& timer):
 MotorDriver::~MotorDriver() {
 }
 
-double MotorDriver::GetAngle() {
+long double MotorDriver::GetAngle() {
 	return angle_;
 }
 
-void MotorDriver::SetVelocity(double angleVelocity){
+void MotorDriver::SetVelocity(long double angleVelocity){
 	angleVelocity_ = angleVelocity;
 }
 
-void MotorDriver::ZeroAngle(double position) {
+void MotorDriver::ZeroAngle(long double position) {
 	angle_ = position;
 }
 
 void MotorDriver::Update() {
-}
-
-bool MotorDriver::IsDone() const {
-	return true;
 }

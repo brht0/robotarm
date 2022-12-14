@@ -6,9 +6,17 @@
 double ConvertToDouble(char* message){
   return atof(message);
 }
-double ConvertToDouble(String message){
+
+double ConvertToInt(char* message){
+  return atoi(message);
+}
+
+double ConvertToDouble(const String& message){
   return atof(message.c_str());
 }
 
+double ConvertToInt(const String& message){
+  return atoi(message.c_str());
+}
 
 #endif // __UTILS_H__

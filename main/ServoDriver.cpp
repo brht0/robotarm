@@ -2,35 +2,30 @@
 
 #include "Arduino.h"
 
-ServoDriver::ServoDriver(int pin):
-    MotorDriver(100, 0.01),
-    pin_(pin)
+ServoDriver::ServoDriver(const Timer& timer, int pin):
+  MotorDriver(timer),
+  pin_(pin),
+  pinAttached(false)
 {
 }
 
 ServoDriver::~ServoDriver() {
-    
 }
 
-void ServoDriver::init(){
-    servo_.attach(pin_);
-}
-
-void ServoDriver::Update(double time){
-  double scalar = (time - targetStartTime_) / (targetTime_ - targetStartTime_);
-
-  if(scalar < 0 || scalar > 1){
-    return;
+void ServoDriver::Update(){
+  if(!pinAttached){
+    AttachPin();
+    pinAttached = true;
   }
 
-  int pos = targetStartAngle_ + scalar * (target_ - targetStartAngle_);
-  servo_.write(pos);
+  position_ += ((long double)angleVelocity_ / (long double)(2.0 * 3.14159));
+
+  if(position_ > maxPosition_) position_ = maxPosition_;
+  if(position_ < minPosition_) position_ = minPosition_;
+
+  servo_.write(position_);
 }
 
-void ServoDriver::ZeroAngle(double position) {
-    angle_ = position;
-}
-
-void ServoDriver::SetAngle(double angle) {
-  angle_ = angle;
+void ServoDriver::AttachPin() {
+  servo_.attach(pin_);
 }

@@ -7,20 +7,21 @@
 
 class ServoDriver : public MotorDriver{
 public:
-    ServoDriver(int pin);
+    ServoDriver(const Timer& timer, int pin);
     ~ServoDriver();
-
-    void init();
     
-    virtual void Update(double time) override;
-
-    void ZeroAngle(double position = 0);
-    virtual void SetAngle(double angle) override;
+    virtual void Update() override;
 
 private:
+    bool pinAttached;
+    void AttachPin();
+
     int pin_;
     Servo servo_;
-
+    long double position_;
+    
+    const long double maxPosition_ = 0.0;
+    const long double minPosition_ = 180.0;
 };
 
 #endif // __SERVODRIVER_H__

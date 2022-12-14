@@ -7,46 +7,24 @@ typedef unsigned long long ull;
 
 class Timer{
 public:
-  Timer(){
-    lastTime_ = micros();
-  }
+  Timer();
 
-  double GetTimeSeconds(){
-    return timeSeconds_;
-  }
-
-  double GetDeltaTimeSeconds(){
-    return deltaTime_;
-  }
-
-  void Update(){
-    ull newTime = micros();
-
-    dt_ = newTime - lastTime_;
-    lastTime_ = newTime;
-
-    deltaTime_ = dt_ * (double)10e-7;
-    timeSeconds_ = (lastTime_ - startTime_) * (double)10e-7;
-  }
-
-  void Reset(){
-    ull newTime = micros();
-
-    startTime_ = newTime;
-    lastTime_ = newTime;
-    dt_ = 0;
-    timeSeconds_ = 0.0;
-    deltaTime_ = 0.0;
-  }
-
+  void Update();
+  void Reset();
+  
+  double GetTimeSeconds() const;
+  double GetDeltaTimeSeconds() const;
+  ull GetTimeMS() const;
+  ull GetDeltaTimeMS() const;
+  
 private:
   ull startTime_ = 0;
   ull lastTime_ = 0;
-  ull dt_ = 0;
   
-  double timeSeconds_ = 0;
-  double deltaTime_ = 0;
-
+  long double timeSeconds_ = 0;
+  long double deltaTime_ = 0;
+  ull timeSecondsMS_ = 0;
+  ull deltaTimeMS_ = 0;
 };
 
 #endif // __TIMER_H__
