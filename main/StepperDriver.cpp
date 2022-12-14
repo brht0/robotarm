@@ -1,8 +1,8 @@
 #include "StepperDriver.h"
 #include "Arduino.h"
 
-StepperDriver::StepperDriver(const Timer& timer, int stepPin, int dirPin, ull stepsPerRevolution) :
-	MotorDriver(timer), stepPin_(stepPin), dirPin_(dirPin), stepsPerRevolution_(stepsPerRevolution),
+StepperDriver::StepperDriver(const Timer& timer, int stepPin, int dirPin, ull stepsPerRevolution, ull minStepDelayMS) :
+	MotorDriver(timer), stepPin_(stepPin), dirPin_(dirPin), stepsPerRevolution_(stepsPerRevolution), minStepDelayMS_(minStepDelayMS),
 	stepDelayMs_(0), lastStepTime_(0), stepValue_(0), dirValue_(0), position_(0), stationary_(true)
 {
 }

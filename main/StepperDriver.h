@@ -5,7 +5,7 @@
 
 class StepperDriver : public MotorDriver{
 public:
-    StepperDriver(const Timer& timer, int stepPin, int dirPin, ull stepsPerRevolution);
+    StepperDriver(const Timer& timer, int stepPin, int dirPin, ull stepsPerRevolution, ull minStepDelayMS);
     ~StepperDriver();
 
     ull GetPosition() const;
@@ -21,12 +21,12 @@ private:
 
     bool stationary_;
     ull stepDelayMs_;
-    const ull minStepDelayMS_ = 560;
-
     ull lastStepTime_;
 
     int stepPin_, dirPin_;
     int stepValue_ = 0, dirValue_ = 0;
+
+    ull minStepDelayMS_;
 };
 
 #endif // __STEPPERDRIVER_H__

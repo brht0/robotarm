@@ -3,13 +3,15 @@
 #include "CppInterface.hpp"
 #include "Utils.hpp"
 
+bool superSlowMode = true;
+
 CppInterface cppInterface;
 Timer motorTimer;
 
 ServoDriver servo1(motorTimer, 9);
-StepperDriver stepper1(motorTimer, 11, 10, 550);  // elbow
-StepperDriver stepper2(motorTimer, 6, 7, 7200);   // shoulder
-StepperDriver stepper3(motorTimer, 2, 3, 130);    // base
+StepperDriver stepper1(motorTimer, 11, 10, 550, 50);  // elbow
+StepperDriver stepper2(motorTimer, 6, 7, 7200, 600);   // shoulder
+StepperDriver stepper3(motorTimer, 2, 3, 130, 50);    // base
 
 enum class Button{
   R1 = 0,
@@ -76,6 +78,8 @@ void ApplyCommand(String command){
       int parameter = ConvertToInt(command.substring(2));
       if(parameter == 4) servo1.SetVelocity(1000.0);
       else if(parameter == 5) servo1.SetVelocity(-1000.0);
+      else if(parameter == 12)
+        superSlowMode = !superSlowMode;
       break;
     }
   }
@@ -86,9 +90,15 @@ void UpdateMotorTargets(){
   double y = joystickValues[(int)Joystick::Y];
   double r = joystickValues[(int)Joystick::R];
 
-  double k_x = 50.0;
-  double k_y = 2000.0;
-  double k_r = -500.0;
+  double k_x = 20.0;
+  double k_y = 20.0;
+  double k_r = -300.0;
+
+  if(superSlowMode){
+    k_x *= 0.33;
+    k_y *= 0.1;
+    k_r *= 0.1;
+  }
 
   if(0){
   Serial.print(x);
@@ -122,7 +132,7 @@ void loop(){
   if(updateTimer.GetTimeSeconds() > 0.05){
     UpdateMotorTargets();
     updateTimer.Reset();
-    // Serial.println(String((long)stepper1.GetPosition()));
+    Serial.println(String((long)stepper1.GetPosition()));
   }
 
   servo1.Update();
