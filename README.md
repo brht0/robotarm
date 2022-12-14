@@ -1,17 +1,13 @@
 # Robotarm
 
-// Todo
+Robotic arm controlled by a game controller.
 
+The current code in main.ino supports a 3+1 DOF robot with a linear gripper. Stepper driver code communicates with DRV8825 stepper motor controllers. Servos are using the Arduino Servo library.
 
-### Resourses
-
-http://robogrok.com/
-
-https://www.youtube.com/watch?v=7hJqxlgx2ps
-
-https://www.makerguides.com/drv8825-stepper-motor-driver-arduino-tutorial/
-
-https://hackaday.io/project/164732-mprt-modified-planetary-robotics-transmission
-
-TB6612FNG
-https://learn.adafruit.com/adafruit-tb6612-h-bridge-dc-stepper-motor-driver-breakout/using-stepper-motors
+## Main components:
+- Arduino Driver code (this repository)
+    - MotorDriver
+    - StepperDriver
+    - ServoDriver
+- Control program that interfaces with Serial USB
+    - https://github.com/brht0/arduinojoystick
